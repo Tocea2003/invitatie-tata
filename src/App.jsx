@@ -1,4 +1,5 @@
 import { useState, useCallback, useMemo } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import OpeningAnimation from './components/OpeningAnimation/OpeningAnimation'
 import InvitationContent from './components/InvitationContent/InvitationContent'
 import AudioControl from './components/AudioControl/AudioControl'
@@ -36,22 +37,54 @@ function AmbientParticles() {
   )
 }
 
+function StartScreen({ onStart }) {
+  return (
+    <motion.div
+      className="start-screen"
+      onClick={onStart}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.5 }}
+    >
+      <div className="start-screen__content">
+        <motion.div
+          className="start-screen__icon"
+          animate={{ scale: [1, 1.1, 1] }}
+          transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+        >
+          🥂
+        </motion.div>
+        <p className="start-screen__text">Apasa pentru a incepe</p>
+      </div>
+    </motion.div>
+  )
+}
+
 export default function App() {
+  const [started, setStarted] = useState(false)
   const [showInvitation, setShowInvitation] = useState(false)
   const audio = useAudio()
 
+  const handleStart = useCallback(() => {
+    audio.init()
+    setStarted(true)
+  }, [audio])
+
   const handleAnimationComplete = useCallback(() => {
     setShowInvitation(true)
-    if (audio.isEnabled) {
-      audio.playMusic()
-    }
+    audio.playMusic()
   }, [audio])
 
   return (
     <div className="app">
       <AmbientParticles />
 
-      {!showInvitation && (
+      <AnimatePresence>
+        {!started && <StartScreen onStart={handleStart} />}
+      </AnimatePresence>
+
+      {started && !showInvitation && (
         <OpeningAnimation onComplete={handleAnimationComplete} audio={audio} />
       )}
 

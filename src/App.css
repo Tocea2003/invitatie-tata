@@ -22,6 +22,40 @@
   animation: float-particle linear infinite;
 }
 
+/* Start screen */
+.start-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-primary);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.start-screen__content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.start-screen__icon {
+  font-size: clamp(4rem, 15vw, 7rem);
+  filter: drop-shadow(0 0 30px rgba(212, 175, 55, 0.4));
+}
+
+.start-screen__text {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(1.1rem, 3.5vw, 1.4rem);
+  color: var(--gold-primary);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  opacity: 0.8;
+}
+
 @keyframes float-particle {
   0% {
     opacity: 0;

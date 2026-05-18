@@ -88,18 +88,6 @@ export default function OpeningAnimation({ onComplete, audio }) {
           transition={{ duration: 0.6 }}
         >
           <div className="opening-animation__content">
-            {phase === 'bottle' && !audio?.isEnabled && (
-              <motion.button
-                className="opening-animation__sound-prompt"
-                onClick={audio?.init}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.5 }}
-              >
-                🔊 Apasa pentru sunet
-              </motion.button>
-            )}
-
             <motion.div
               className="opening-animation__bottle-wrapper"
               initial={{ opacity: 0, y: 100 }}
