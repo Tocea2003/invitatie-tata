@@ -4,8 +4,8 @@ import confetti from 'canvas-confetti'
 import ChampagneBottle from './ChampagneBottle'
 import './OpeningAnimation.css'
 
-const PHASES = ['bottle', 'cork', 'liquid', 'confetti', 'reveal']
-const TIMINGS = { bottle: 1500, cork: 1000, liquid: 1500, confetti: 2000 }
+const PHASES = ['bottle', 'shake', 'cork', 'liquid', 'confetti', 'reveal']
+const TIMINGS = { bottle: 1500, shake: 1200, cork: 1200, liquid: 1500, confetti: 2000 }
 
 export default function OpeningAnimation({ onComplete, audio }) {
   const [phase, setPhase] = useState('bottle')
@@ -75,6 +75,9 @@ export default function OpeningAnimation({ onComplete, audio }) {
     setTimeout(onComplete, 100)
   }
 
+  const isBottleFading = phase === 'confetti' || phase === 'reveal'
+  const isShaking = phase === 'shake' || phase === 'cork'
+
   return (
     <AnimatePresence>
       {visible && (
@@ -85,7 +88,6 @@ export default function OpeningAnimation({ onComplete, audio }) {
           transition={{ duration: 0.6 }}
         >
           <div className="opening-animation__content">
-            {/* Tap for sound overlay */}
             {phase === 'bottle' && !audio?.isEnabled && (
               <motion.button
                 className="opening-animation__sound-prompt"
@@ -98,34 +100,47 @@ export default function OpeningAnimation({ onComplete, audio }) {
               </motion.button>
             )}
 
-            {/* Bottle animation */}
             <motion.div
               className="opening-animation__bottle-wrapper"
               initial={{ opacity: 0, y: 100 }}
               animate={
-                phase === 'confetti' || phase === 'reveal'
+                isBottleFading
                   ? { opacity: 0, scale: 0.5, y: -50 }
                   : { opacity: 1, y: 0 }
               }
               transition={
-                phase === 'confetti' || phase === 'reveal'
+                isBottleFading
                   ? { duration: 0.8 }
                   : { duration: 1.2, ease: 'easeOut' }
               }
             >
-              {phase === 'cork' && (
+              {isShaking ? (
                 <motion.div
                   className="opening-animation__bottle-shake"
-                  animate={{ x: [-2, 2, -2, 2, 0] }}
-                  transition={{ duration: 0.3 }}
+                  animate={
+                    phase === 'shake'
+                      ? {
+                          x: [-3, 4, -5, 3, -4, 5, -3, 4, -2, 3, -4, 5, -3, 0],
+                          rotate: [-1, 1.5, -2, 1, -1.5, 2, -1, 1.5, -2, 1, -1.5, 2, -1, 0],
+                        }
+                      : {
+                          x: [-5, 6, -7, 5, 0],
+                          rotate: [-2, 3, -2, 1, 0],
+                        }
+                  }
+                  transition={
+                    phase === 'shake'
+                      ? { duration: 1.1, ease: 'easeInOut' }
+                      : { duration: 0.3, ease: 'easeOut' }
+                  }
                 >
                   <ChampagneBottle phase={phase} />
                 </motion.div>
+              ) : (
+                <ChampagneBottle phase={phase} />
               )}
-              {phase !== 'cork' && <ChampagneBottle phase={phase} />}
             </motion.div>
 
-            {/* Number 50 reveal */}
             {(phase === 'confetti' || phase === 'reveal') && (
               <motion.div
                 className="opening-animation__number"

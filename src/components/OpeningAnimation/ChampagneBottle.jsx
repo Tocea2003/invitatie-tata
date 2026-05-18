@@ -1,9 +1,15 @@
 import { motion } from 'framer-motion'
 
 export default function ChampagneBottle({ phase }) {
+  const showCork = phase === 'bottle' || phase === 'shake' || phase === 'cork'
+  const corkPopping = phase === 'cork'
+  const showSpray = phase === 'cork' || phase === 'liquid'
+  const showLiquid = phase === 'liquid' || phase === 'confetti'
+  const isShaking = phase === 'shake'
+
   return (
     <svg
-      viewBox="0 0 120 360"
+      viewBox="0 0 120 400"
       className="champagne-bottle"
       xmlns="http://www.w3.org/2000/svg"
     >
@@ -21,11 +27,6 @@ export default function ChampagneBottle({ phase }) {
         <linearGradient id="liquidGrad" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stopColor="#F5E6A3" stopOpacity="0.9" />
           <stop offset="100%" stopColor="#D4AF37" stopOpacity="0.6" />
-        </linearGradient>
-        <linearGradient id="neckGrad" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0%" stopColor="#1a3a1a" />
-          <stop offset="50%" stopColor="#3a5a2a" />
-          <stop offset="100%" stopColor="#1a3a1a" />
         </linearGradient>
         <filter id="glow">
           <feGaussianBlur stdDeviation="4" result="blur" />
@@ -75,53 +76,138 @@ export default function ChampagneBottle({ phase }) {
       {/* Neck ring */}
       <ellipse cx="60" cy="85" rx="18" ry="3" fill="url(#goldGrad)" opacity="0.7" />
 
-      {/* Cork */}
-      {(phase === 'bottle' || phase === 'cork') && (
-        <motion.g
-          animate={
-            phase === 'cork'
-              ? { y: -300, x: 30, rotate: 720, opacity: 0 }
-              : {}
-          }
-          transition={{ duration: 0.7, ease: 'easeOut' }}
-        >
-          <rect x="51" y="30" width="18" height="22" rx="3" fill="#C4A35A" />
-          <rect x="49" y="26" width="22" height="8" rx="2" fill="#B8960F" />
-          <line x1="55" y1="32" x2="55" y2="50" stroke="#A08830" strokeWidth="0.5" opacity="0.4" />
-          <line x1="60" y1="32" x2="60" y2="50" stroke="#A08830" strokeWidth="0.5" opacity="0.4" />
-          <line x1="65" y1="32" x2="65" y2="50" stroke="#A08830" strokeWidth="0.5" opacity="0.4" />
-        </motion.g>
-      )}
-
-      {/* Spray mist when cork pops */}
-      {phase === 'cork' && (
+      {/* Pressure bubbles inside neck during shake */}
+      {isShaking && (
         <>
-          {[...Array(6)].map((_, i) => (
+          {[...Array(5)].map((_, i) => (
             <motion.circle
-              key={i}
-              cx={55 + Math.random() * 10}
-              cy={35}
-              r={2 + Math.random() * 3}
+              key={`pressure-${i}`}
+              cx={55 + i * 2}
+              cy={55}
+              r={1.5}
               fill="#F5E6A3"
-              opacity={0.8}
-              initial={{ y: 0, scale: 0, opacity: 0.8 }}
+              opacity={0.5}
               animate={{
-                y: -(30 + Math.random() * 40),
-                x: (Math.random() - 0.5) * 40,
-                scale: 1.5,
-                opacity: 0,
+                y: [0, -(5 + i * 3), 0],
+                opacity: [0.3, 0.7, 0.3],
               }}
-              transition={{ duration: 0.6 + Math.random() * 0.4, delay: Math.random() * 0.2 }}
+              transition={{
+                duration: 0.4,
+                repeat: Infinity,
+                delay: i * 0.08,
+              }}
             />
           ))}
         </>
       )}
 
+      {/* Cork — flies off dramatically on pop */}
+      {showCork && (
+        <motion.g
+          initial={false}
+          animate={
+            corkPopping
+              ? {
+                  y: -350,
+                  x: 15,
+                  rotate: 1080,
+                  opacity: [1, 1, 1, 0.8, 0],
+                }
+              : isShaking
+                ? {
+                    y: [0, -4, 0, -3, 0, -5, 0, -3, 0],
+                  }
+                : { y: 0 }
+          }
+          transition={
+            corkPopping
+              ? { duration: 0.9, ease: [0.2, 0, 0.2, 1] }
+              : isShaking
+                ? { duration: 0.8, repeat: Infinity, ease: 'easeInOut' }
+                : { duration: 0.3 }
+          }
+        >
+          {/* Cork body */}
+          <rect x="51" y="30" width="18" height="22" rx="3" fill="#C4A35A" />
+          {/* Cork top (wider mushroom shape) */}
+          <rect x="48" y="24" width="24" height="10" rx="3" fill="#B8960F" />
+          {/* Cork wire cage */}
+          <path d="M50,34 L48,28 M70,34 L72,28" stroke="#888" strokeWidth="0.7" fill="none" />
+          <path d="M52,34 L55,26 M68,34 L65,26" stroke="#888" strokeWidth="0.5" fill="none" opacity="0.6" />
+          {/* Cork texture lines */}
+          <line x1="55" y1="33" x2="55" y2="50" stroke="#A08830" strokeWidth="0.5" opacity="0.4" />
+          <line x1="60" y1="33" x2="60" y2="50" stroke="#A08830" strokeWidth="0.5" opacity="0.4" />
+          <line x1="65" y1="33" x2="65" y2="50" stroke="#A08830" strokeWidth="0.5" opacity="0.4" />
+        </motion.g>
+      )}
+
+      {/* Big spray burst when cork pops */}
+      {showSpray && (
+        <>
+          {/* Central spray jet */}
+          {[...Array(8)].map((_, i) => (
+            <motion.circle
+              key={`spray-${i}`}
+              cx={56 + Math.sin(i * 0.8) * 6}
+              cy={40}
+              r={2 + (i % 3)}
+              fill="#F5E6A3"
+              initial={{ y: 0, scale: 0, opacity: 0.9 }}
+              animate={{
+                y: -(40 + i * 20 + Math.random() * 30),
+                x: (Math.sin(i * 1.5)) * 25,
+                scale: [0, 1.8, 0.5],
+                opacity: [0.9, 0.7, 0],
+              }}
+              transition={{
+                duration: 0.8 + Math.random() * 0.5,
+                delay: i * 0.04,
+                ease: 'easeOut',
+              }}
+            />
+          ))}
+          {/* Side spray droplets */}
+          {[...Array(6)].map((_, i) => (
+            <motion.circle
+              key={`drop-${i}`}
+              cx={60}
+              cy={38}
+              r={1 + Math.random() * 1.5}
+              fill="#D4AF37"
+              initial={{ opacity: 0.8 }}
+              animate={{
+                y: -(20 + Math.random() * 60),
+                x: (i % 2 === 0 ? 1 : -1) * (15 + Math.random() * 25),
+                opacity: 0,
+              }}
+              transition={{
+                duration: 0.6 + Math.random() * 0.4,
+                delay: 0.1 + i * 0.05,
+                ease: 'easeOut',
+              }}
+            />
+          ))}
+          {/* Foam burst at opening */}
+          <motion.ellipse
+            cx={60}
+            cy={48}
+            rx={8}
+            ry={4}
+            fill="#F5E6A3"
+            opacity={0.6}
+            initial={{ scale: 0, opacity: 0.8 }}
+            animate={{ scale: [0, 2.5, 3], opacity: [0.8, 0.4, 0] }}
+            transition={{ duration: 0.8 }}
+          />
+        </>
+      )}
+
       {/* Liquid overflow */}
-      {(phase === 'liquid' || phase === 'confetti') && (
+      {showLiquid && (
         <motion.g>
+          {/* Main left stream */}
           <motion.path
-            d="M52,48 Q50,55 48,70 Q45,90 43,120 Q40,160 38,200"
+            d="M55,48 Q52,60 48,80 Q44,110 42,150 Q39,190 38,230"
             fill="none"
             stroke="url(#liquidGrad)"
             strokeWidth="8"
@@ -130,30 +216,42 @@ export default function ChampagneBottle({ phase }) {
             animate={{ pathLength: 1, opacity: 0.6 }}
             transition={{ duration: 1.5, ease: 'easeOut' }}
           />
+          {/* Main right stream */}
           <motion.path
-            d="M68,48 Q70,55 72,70 Q75,90 77,120 Q80,160 82,200"
+            d="M65,48 Q68,60 72,80 Q76,110 78,150 Q81,190 82,230"
             fill="none"
             stroke="url(#liquidGrad)"
             strokeWidth="6"
             strokeLinecap="round"
             initial={{ pathLength: 0, opacity: 0.7 }}
             animate={{ pathLength: 1, opacity: 0.5 }}
-            transition={{ duration: 1.5, ease: 'easeOut', delay: 0.2 }}
+            transition={{ duration: 1.5, ease: 'easeOut', delay: 0.15 }}
           />
-          {/* Bubbles */}
-          {[...Array(10)].map((_, i) => (
+          {/* Center drip */}
+          <motion.path
+            d="M60,48 Q60,65 59,90 Q58,120 60,160"
+            fill="none"
+            stroke="url(#liquidGrad)"
+            strokeWidth="4"
+            strokeLinecap="round"
+            initial={{ pathLength: 0, opacity: 0.5 }}
+            animate={{ pathLength: 1, opacity: 0.4 }}
+            transition={{ duration: 1.2, ease: 'easeOut', delay: 0.3 }}
+          />
+          {/* Rising bubbles */}
+          {[...Array(12)].map((_, i) => (
             <motion.circle
               key={`bubble-${i}`}
-              cx={50 + Math.random() * 20}
-              cy={50 + Math.random() * 30}
-              r={1.5 + Math.random() * 2}
+              cx={48 + Math.random() * 24}
+              cy={50 + Math.random() * 40}
+              r={1 + Math.random() * 2.5}
               fill="#F5E6A3"
               opacity={0.6}
               initial={{ y: 0, opacity: 0.6 }}
-              animate={{ y: -(20 + Math.random() * 30), opacity: 0 }}
+              animate={{ y: -(25 + Math.random() * 35), opacity: 0 }}
               transition={{
-                duration: 1 + Math.random() * 1,
-                delay: Math.random() * 1,
+                duration: 0.8 + Math.random() * 1,
+                delay: Math.random() * 1.2,
                 repeat: 2,
                 repeatType: 'loop',
               }}
