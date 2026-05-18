@@ -7,17 +7,17 @@ const NOTE_FREQS = {
 }
 
 const HAPPY_BIRTHDAY = [
-  ['C4', 0.75], ['C4', 0.25],
-  ['D4', 1], ['C4', 1], ['F4', 1], ['E4', 1.8], [null, 0.2],
+  ['C4', 0.5], ['C4', 0.25],
+  ['D4', 0.75], ['C4', 0.75], ['F4', 0.75], ['E4', 1.2], [null, 0.15],
 
-  ['C4', 0.75], ['C4', 0.25],
-  ['D4', 1], ['C4', 1], ['G4', 1], ['F4', 1.8], [null, 0.2],
+  ['C4', 0.5], ['C4', 0.25],
+  ['D4', 0.75], ['C4', 0.75], ['G4', 0.75], ['F4', 1.2], [null, 0.15],
 
-  ['C4', 0.75], ['C4', 0.25],
-  ['C5', 1], ['A4', 1], ['F4', 1], ['E4', 1], ['D4', 1.8], [null, 0.2],
+  ['C4', 0.5], ['C4', 0.25],
+  ['C5', 0.75], ['A4', 0.75], ['F4', 0.75], ['E4', 0.75], ['D4', 1.2], [null, 0.15],
 
-  ['Bb4', 0.75], ['Bb4', 0.25],
-  ['A4', 1], ['F4', 1], ['G4', 1], ['F4', 2.5],
+  ['Bb4', 0.5], ['Bb4', 0.25],
+  ['A4', 0.75], ['F4', 0.75], ['G4', 0.75], ['F4', 1.8],
 ]
 
 function playPianoNote(ctx, freq, startTime, duration, masterGain) {
@@ -75,7 +75,7 @@ function playPianoNote(ctx, freq, startTime, duration, masterGain) {
 }
 
 function playHappyBirthday(ctx, masterGain) {
-  const tempo = 100
+  const tempo = 140
   const beatDuration = 60 / tempo
 
   let currentTime = ctx.currentTime + 0.3
