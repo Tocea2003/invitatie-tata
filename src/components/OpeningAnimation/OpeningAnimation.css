@@ -1,0 +1,114 @@
+.opening-animation {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-primary);
+  overflow: hidden;
+}
+
+.opening-animation__content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.opening-animation__sound-prompt {
+  position: absolute;
+  top: 2rem;
+  z-index: 10;
+  background: rgba(212, 175, 55, 0.15);
+  border: 1px solid var(--gold-primary);
+  color: var(--gold-primary);
+  padding: 0.6rem 1.5rem;
+  border-radius: 2rem;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.opening-animation__sound-prompt:hover {
+  background: rgba(212, 175, 55, 0.25);
+}
+
+.opening-animation__bottle-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  filter: drop-shadow(0 0 20px rgba(212, 175, 55, 0.3));
+}
+
+.opening-animation__bottle-shake {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.champagne-bottle {
+  height: 55vh;
+  max-height: 450px;
+  width: auto;
+}
+
+.opening-animation__number {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+}
+
+.opening-animation__fifty {
+  font-family: 'Playfair Display', serif;
+  font-weight: 900;
+  font-size: clamp(6rem, 25vw, 14rem);
+  background: linear-gradient(135deg, #D4AF37, #F5E6A3, #D4AF37);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1;
+  text-shadow: none;
+  filter: drop-shadow(0 0 30px rgba(212, 175, 55, 0.5));
+}
+
+.opening-animation__years {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(1.2rem, 4vw, 2.5rem);
+  color: var(--gold-primary);
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+}
+
+.opening-animation__skip {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 0.85rem;
+  cursor: pointer;
+  opacity: 0.5;
+  transition: opacity 0.3s;
+  z-index: 110;
+}
+
+.opening-animation__skip:hover {
+  opacity: 1;
+  color: var(--gold-primary);
+}
+
+@media (max-width: 480px) {
+  .champagne-bottle {
+    height: 45vh;
+  }
+}
